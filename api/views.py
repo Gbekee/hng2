@@ -6,22 +6,12 @@ from .models import User
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
+from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate,  login
 # Create your views here.
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['email'] = user.email
-        token['firstName'] = user.firstName
-        token['lastName'] = user.lastName
-        # Add custom claims
-        # ...
 
-        return token
 
 
 class UserView(APIView):
@@ -40,12 +30,11 @@ class UserView(APIView):
                         'status': 'success',
                         'message': 'Registration successful',
                         'data': {
-                            'access': str(token),
-                            'refresh':str(refresh)
+                            'access': str(token)
                         },
                         'user': serializer.data
 
-                    }, status=200)
+                    }, status=status.HTTP_201_CREATED)
         errors=[]
         if User.objects.filter(email=request.data['email']).exists():
             
@@ -83,5 +72,3 @@ class LoginView(APIView):
                 return Response(
                     
                 )
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class=MyTokenObtainPairSerializer
