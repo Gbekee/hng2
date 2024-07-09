@@ -16,21 +16,17 @@ from django.contrib.auth import authenticate,  login
 
 class UserView(APIView):
     serializer_class=UserSerializer
-    def get(self, request):
-        users=User.objects.all()
-        serializer=UserSerializer(users, many=True)
-        return Response(serializer.data)
     def post(self, request):
         serializer=UserSerializer(data=request.data)
         if serializer.is_valid():
             registered=serializer.save()
-            refresh=RefreshToken.for_user(registered)
-            token=refresh.access_token
+            # refresh=RefreshToken.for_user(registered)
+            # token=refresh.access_token
             return Response({
                         'status': 'success',
                         'message': 'Registration successful',
                         'data': {
-                            'access': str(token)
+                            'access': ''
                         },
                         'user': serializer.data
 
@@ -58,7 +54,12 @@ class UserView(APIView):
                 'field': 'last name',
                 'message': 'last name cannot be null'
             })
-
+        if len(errors)<1:
+            return Response({
+                'status':'Bad Request',
+                'message':'Registration Unsuccessful',
+                'statuscode':400
+                }, status=status.HTTP_400_BAD_REQUEST)
         return Response({
             'errors':errors
         })
@@ -66,9 +67,17 @@ class LoginView(APIView):
     serializer_class=LoginSerializer
     def post(self, request):
         login_user=User.objects.filter(email=request.data['email'])
-        if login_user.exists():
-            if check_password(request.data['password'], login_user[0].password):
-                serializer=UserSerializer(User.objects.get(email=request.data['email']))
-                return Response(
-                    
-                )
+        if login_user.exists() and login_user.first().check_password(request.data['password']):
+            serializer=UserSerializer(User.objects.get(email=request.data['email']))
+            return Response({
+                'status': 'success',
+                'message':'Login successful',
+                'data':{
+                },
+                'user': serializer.data
+            }, status=status.HTTP_200_OK)
+        return Response({
+            'status': 'Bad request',
+            'message':'Authentication failed',
+            'statusCode':401
+        },  status=status.HTTP_401_UNAUTHORIZED)
