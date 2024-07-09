@@ -14,7 +14,7 @@ from django.contrib.auth import authenticate,  login
 
 
 
-class UserView(APIView):
+class RegisterView(APIView):
     serializer_class=UserSerializer
     def post(self, request):
         serializer=UserSerializer(data=request.data)
