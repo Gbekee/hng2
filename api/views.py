@@ -16,8 +16,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token['email'] = user.email
-        token['first_name'] = user.first_name
-        token['last_name'] = user.last_name
+        token['firstName'] = user.firstName
+        token['lastName'] = user.lastName
         # Add custom claims
         # ...
 
@@ -59,12 +59,12 @@ class UserView(APIView):
                 'field': 'password',
                 'message': 'password cannot be null'
             })
-        if not request.data['first_name']:
+        if not request.data['firstName']:
             errors.append({
                 'field': 'first name',
                 'message': 'first name cannot be null'
             })
-        if not request.data['last_name']:
+        if not request.data['lastName']:
             errors.append({
                 'field': 'last name',
                 'message': 'last name cannot be null'

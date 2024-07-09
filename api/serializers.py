@@ -10,8 +10,7 @@ class OrgSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model=User
-        fields=('id', 'first_name', 'last_name', 'email', 'phone', 'password') 
-        required_fields=('id', 'first_name', 'last_name', 'email', 'phone', 'password')
+        fields=('id', 'firstName', 'lastName', 'email', 'phone', 'password') 
         extra_kwargs={
             'password':{'write_only':True},
         }
