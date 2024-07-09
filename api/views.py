@@ -34,15 +34,15 @@ class UserView(APIView):
         serializer=UserSerializer(data=request.data)
         if serializer.is_valid():
             registered=serializer.save()
-            print(registered)
-            token=RefreshToken.for_user(registered)
-            print(registered)
-            print(registered.id)
-
+            refresh=RefreshToken.for_user(registered)
+            token=refresh.access_token
             return Response({
                         'status': 'success',
                         'message': 'Registration successful',
-                        'data': token,
+                        'data': {
+                            'access': str(token),
+                            'refresh':str(refresh)
+                        },
                         'user': serializer.data
 
                     }, status=200)
