@@ -22,7 +22,7 @@ class UserSerializer(ModelSerializer):
             user.save()
             return user
         except Exception as e:
-            print(f'error occurred {e}')
+            pass
 
 class LoginSerializer(ModelSerializer):
     class Meta:
