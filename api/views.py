@@ -32,12 +32,17 @@ class RegisterView(APIView):
 
                     }, status=status.HTTP_201_CREATED)
         errors=[]
-        if User.objects.filter(email=request.data['email']).exists():
-            
-            errors.append({
-                'field': 'email',
-                'message': 'email already exists'
-            })
+        if 'email' not in request.data or 'firstName' not in request.data or 'lastName' in request.data or 'phone' in request.data or 'password' in request.user:
+            return Response({
+                'status':'Bad Request',
+                'message':'Registration Unsuccessful',
+                'statuscode':400
+                }, status=status.HTTP_400_BAD_REQUEST)
+        elif User.objects.filter(email=request.data['email']).exists():
+                errors.append({
+                    'field': 'email',
+                    'message': 'email already exists'
+                })
         if not request.data['password']:
             errors.append({
                 'field': 'password',
@@ -61,7 +66,7 @@ class RegisterView(APIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
         return Response({
             'errors':errors
-        })
+        }, status=status.HTTP_400_BAD_REQUEST)
 class LoginView(APIView):
     serializer_class=LoginSerializer
     def post(self, request):
@@ -116,13 +121,13 @@ class OrgView(APIView):
                 'status':'success',
                 'message':'organisation created successfully',
                 'data':serializer.data
-                })
+                }, status=status.HTTP_201_CREATED)
         except:
             return Response({
                 'status':'Bad request',
                 'message':'Client error',
                 'statuscode':400
-            })
+            }, status=status.HTTP_400_BAD_REQUEST)
 class OrgDetailView(APIView):
     permission_classes=[IsAuthenticated]
     serializer_class=OrgSerializer
