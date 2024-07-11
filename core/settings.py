@@ -79,9 +79,17 @@ AUTH_USER_MODEL = 'api.User'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'HOST':'monorail.proxy.rlwy.net',
+        'PORT': 50547,
+        'USER': 'postgres',
+        'PASSWORD' : 'ScMJdbbxzHdHlnulZdIPvJNDRBieflKN'
+        # 'TEST':{
+        #     'NAME': 'test_defaultdb'
+        #     }
+    },
+
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
